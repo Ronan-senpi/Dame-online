@@ -354,6 +354,7 @@ GameObject:
   - component: {fileID: 963194228}
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
+  - component: {fileID: 963194229}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -419,13 +420,27 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.19080894, y: 0, z: 0, w: 0.9816273}
-  m_LocalPosition: {x: -0.3, y: 5, z: -10.7}
+  m_LocalRotation: {x: -0.41131744, y: -0.0005415851, z: 0.00024258485, w: -0.911492}
+  m_LocalPosition: {x: -0.55315393, y: 9.225331, z: -8.475}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 22, y: 0, z: 0}
+--- !u!114 &963194229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8df411ee86ba0d946a219390abe1649b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 5
+  smoothFactor: 5
 --- !u!1 &1349468987
 GameObject:
   m_ObjectHideFlags: 0
@@ -500,11 +515,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8162253700803002428, guid: 3a56bdc1d7512b24db2beedbfb1cd9be, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 5.99
+      value: 3.456
       objectReference: {fileID: 0}
     - target: {fileID: 8162253700803002428, guid: 3a56bdc1d7512b24db2beedbfb1cd9be, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.42967665
+      value: 0.602
       objectReference: {fileID: 0}
     - target: {fileID: 8162253700803002428, guid: 3a56bdc1d7512b24db2beedbfb1cd9be, type: 3}
       propertyPath: m_LocalPosition.z
@@ -557,15 +572,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2618764348272580539, guid: 5042283384c710743b5b96b0deebde9b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -8.49
+      value: -5.16
       objectReference: {fileID: 0}
     - target: {fileID: 2618764348272580539, guid: 5042283384c710743b5b96b0deebde9b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.5
+      value: 0.521
       objectReference: {fileID: 0}
     - target: {fileID: 2618764348272580539, guid: 5042283384c710743b5b96b0deebde9b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 5.34
+      value: 4.837
       objectReference: {fileID: 0}
     - target: {fileID: 2618764348272580539, guid: 5042283384c710743b5b96b0deebde9b, type: 3}
       propertyPath: m_LocalRotation.w
