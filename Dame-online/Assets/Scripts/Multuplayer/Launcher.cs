@@ -7,6 +7,8 @@ public class Launcher : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     void Start()
     {
+
+        MenuManager.instance.OpenMenu("Loading");
         Debug.Log("connecting to Master");
         PhotonNetwork.ConnectUsingSettings();
     }
@@ -22,6 +24,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     public override void OnJoinedLobby()
     {
+        MenuManager.instance.OpenMenu("Title");
         Debug.Log("Joined lobby");
     }
 
