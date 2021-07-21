@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     }
     public void QuitGame()
     {
+        MenuManager.Instance.OpenMenu(MenuType.Loading);
 #if UNITY_WEBPLAYER
      public static string webplayerQuitURL = "http://ronan-dhersignerie.fr/";
 #endif

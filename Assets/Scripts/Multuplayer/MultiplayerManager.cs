@@ -24,6 +24,14 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     Transform roomListContent;
     [SerializeField]
     GameObject roomListItemPrefab;
+    [SerializeField]
+    Transform playerListContent;
+    [SerializeField]
+    GameObject playerListItemPrefab;
+
+    [Header("Button")]
+    [SerializeField]
+    GameObject StartGameBtn;
 
     void Awake()
     {
@@ -38,13 +46,17 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         Debug.Log("Connecting to Master");
         PhotonNetwork.ConnectUsingSettings();
     }
+    #region  ======================= Public : Start  =======================
+
     public void CreateRoom()
     {
-        if (string.IsNullOrEmpty(roomNameInput.text))
-        {
-            return;
-        }
-        PhotonNetwork.CreateRoom(roomNameInput.text);
+        string roomName = "Room#";
+        if (!string.IsNullOrEmpty(roomNameInput.text))
+            roomName = roomNameInput.text;
+        else
+            roomName += Random.Range(0, 10000).ToString("0000");
+
+        PhotonNetwork.CreateRoom(roomName);
         MenuManager.Instance.OpenMenu(MenuType.Loading);
     }
     public void LeaveRoom()
@@ -63,8 +75,41 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         PhotonNetwork.JoinRoom(roomNameInput.text);
         MenuManager.Instance.OpenMenu(MenuType.Loading);
     }
+    
+    public void StartGame()
+    {
+        PhotonNetwork.LoadLevel(1);
+    }
 
-    #region Photon Override : Start
+    #endregion  ======================= Public : end  =======================
+
+    #region  ======================= Private : Start  =======================
+    private GameObject CreatePlayer(Player player)
+    {
+        GameObject playerGo = Instantiate(playerListItemPrefab, playerListContent);
+        playerGo.GetComponent<PlayerListItemController>().Init(player);
+        return playerGo;
+    }
+
+    private void ClearPalyerRoomList()
+    {
+        foreach (Transform child in playerListContent)
+        {
+            Destroy(child.gameObject);
+        }
+    }
+    private void FillPlayerRoomList()
+    {
+
+        Player[] players = PhotonNetwork.PlayerList;
+
+        for (int i = 0; i < players.Length; i++)
+            CreatePlayer(players[i]);
+
+    }
+    #endregion  ======================= Private : End  =======================
+
+    #region  ======================= Photon Override : Start  =======================
 
     public override void OnConnectedToMaster()
     {
@@ -77,6 +122,8 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     {
         MenuManager.Instance.OpenMenu(MenuType.Title);
         Debug.Log("Joined Lobby");
+        //En attendant la saisie du joueur
+        PhotonNetwork.NickName = "Player#" + Random.Range(0, 10000).ToString("0000");
     }
 
     public override void OnJoinedRoom()
@@ -84,6 +131,9 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         MenuManager.Instance.OpenMenu(MenuType.Room);
         roomNameText.text = PhotonNetwork.CurrentRoom.Name;
 
+        FillPlayerRoomList();
+
+        StartGameBtn.SetActive(PhotonNetwork.IsMasterClient);
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)
@@ -93,23 +143,39 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         MenuManager.Instance.OpenMenu(MenuType.Error);
     }
 
-
+    
     public override void OnLeftRoom()
     {
         MenuManager.Instance.OpenMenu(MenuType.Title);
+        ClearPalyerRoomList();
+    }
+
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        CreatePlayer(newPlayer);
     }
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
-        foreach (Transform trans in roomListContent)
+        foreach (Transform child in roomListContent)
         {
-            Destroy(trans.gameObject);
+            Destroy(child.gameObject);
         }
 
         for (int i = 0; i < roomList.Count; i++)
         {
+            if (roomList[i].RemovedFromList)
+                continue;
             Instantiate(roomListItemPrefab, roomListContent).GetComponent<RoomListItemController>().Init(roomList[i]);
         }
     }
-    #endregion Photon Override : End
+
+    public override void OnMasterClientSwitched(Player newMasterClient)
+    {
+        ClearPalyerRoomList();
+        FillPlayerRoomList();
+
+        StartGameBtn.SetActive(PhotonNetwork.IsMasterClient);
+    }
+    #endregion  ======================= Photon Override : End  =======================
 }
