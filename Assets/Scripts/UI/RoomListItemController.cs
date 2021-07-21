@@ -23,9 +23,8 @@ public class RoomListItemController : MonoBehaviour
 
     }
 
-
     public void JoinRoom()
     {
-
+        MultiplayerManager.Instance.JoinRoom(roomInfo);
     }
 }
