@@ -8,7 +8,9 @@ using UnityEngine;
 
 public class MultiplayerManager : MonoBehaviourPunCallbacks
 {
-    public static MultiplayerManager Instance;
+
+    public static string PhotonPrefabPath { get; set; } = "PhotonPrefabs";
+    public static MultiplayerManager Instance { get; set; }
     [Header("Inputs")]
     [SerializeField]
     TMP_InputField roomNameInput;
