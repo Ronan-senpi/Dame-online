@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-
+using UnityEngine.UI;
 
 public class MultiplayerManager : MonoBehaviourPunCallbacks
 {
@@ -34,6 +34,8 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     [Header("Button")]
     [SerializeField]
     GameObject StartGameBtn;
+    [SerializeField]
+    GameObject rulesBtn;
 
     void Awake()
     {
@@ -80,6 +82,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     
     public void StartGame()
     {
+        RoomManager.Instance.SetSeparationControlsState(rulesBtn.GetComponent<Toggle>().isOn);
         PhotonNetwork.LoadLevel(1);
     }
 
@@ -93,7 +96,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         return playerGo;
     }
 
-    private void ClearPalyerRoomList()
+    private void ClearPlayerRoomList()
     {
         foreach (Transform child in playerListContent)
         {
@@ -136,6 +139,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         FillPlayerRoomList();
 
         StartGameBtn.SetActive(PhotonNetwork.IsMasterClient);
+        rulesBtn.SetActive(PhotonNetwork.IsMasterClient);
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)
@@ -149,7 +153,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     public override void OnLeftRoom()
     {
         MenuManager.Instance.OpenMenu(MenuType.Title);
-        ClearPalyerRoomList();
+        ClearPlayerRoomList();
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -174,10 +178,11 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
     public override void OnMasterClientSwitched(Player newMasterClient)
     {
-        ClearPalyerRoomList();
+        ClearPlayerRoomList();
         FillPlayerRoomList();
 
         StartGameBtn.SetActive(PhotonNetwork.IsMasterClient);
+        rulesBtn.SetActive(PhotonNetwork.IsMasterClient);
     }
     #endregion  ======================= Photon Override : End  =======================
 }

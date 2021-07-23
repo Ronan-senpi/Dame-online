@@ -1,8 +1,8 @@
-using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class DragableObject : MonoBehaviourPun, IPunObservable
 {
@@ -10,10 +10,13 @@ public class DragableObject : MonoBehaviourPun, IPunObservable
     private float mZCoord;
     private PhotonView pv;
     private Rigidbody rb;
+    private Photon.Realtime.Player baseId;
+    private bool canControl = true;
 
     private void Awake()
     {
         pv = GetComponent<PhotonView>();
+        baseId = pv.Owner;
     }
 
     private void Start()
@@ -27,21 +30,35 @@ public class DragableObject : MonoBehaviourPun, IPunObservable
     {
         if (pv.Owner != PhotonNetwork.LocalPlayer)
         {
-            pv.TransferOwnership(PhotonNetwork.LocalPlayer);
+            if (!RoomManager.Instance.separateControls)
+            {
+                pv.TransferOwnership(PhotonNetwork.LocalPlayer);
+                canControl = true;
+            }
+            else
+            {
+                canControl = false;
+            }
         }
-        mZCoord = Camera.main.WorldToScreenPoint(gameObject.transform.position).z;
-        mOffset = gameObject.transform.position - GetMouseWorldPos();
-        rb.isKinematic = true;
+        if (canControl)
+        {
+            mZCoord = Camera.main.WorldToScreenPoint(gameObject.transform.position).z;
+            mOffset = gameObject.transform.position - GetMouseWorldPos();
+            rb.isKinematic = true;
+        }
     }
 
     void OnMouseDrag()
     {
-        Vector3 nPos = GetMouseWorldPos() + mOffset;
-        if (nPos.y < 0.45f)
+        if (canControl)
         {
-            nPos.y = 0.45f;
+            Vector3 nPos = GetMouseWorldPos() + mOffset;
+            if (nPos.y < 0.45f)
+            {
+                nPos.y = 0.45f;
+            }
+            transform.position = nPos;
         }
-        transform.position = nPos;
     }
 
     private void OnMouseUp()

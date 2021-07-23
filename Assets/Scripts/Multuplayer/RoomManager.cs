@@ -5,20 +5,27 @@ using Photon.Pun;
 using System;
 using System.IO;
 using UnityEngine;
-
-public class RoomManager : MonoBehaviourPunCallbacks
+using UnityEngine.UI;
+public class RoomManager : MonoBehaviourPunCallbacks, IPunObservable
 {
-    public static RoomManager Instance { get; set; }
+    #region Rules parameters
+    public bool separateControls;
+    #endregion
+
+    private static RoomManager instance;
+    public static RoomManager Instance
+    {
+        get
+        {
+            if (instance == null) instance = FindObjectOfType<RoomManager>();
+            return instance;
+        }
+        set { instance = value; }
+    }
 
     private void Awake()
     {
-        if (Instance)
-        {
-            Destroy(gameObject);
-            return;
-        }
         DontDestroyOnLoad(gameObject);
-        Instance = this;
     }
 
     public override void OnEnable()
@@ -36,7 +43,22 @@ public class RoomManager : MonoBehaviourPunCallbacks
     }
 
     #region  ======================= Public : Start  =======================
+    public void SetSeparationControlsState(bool state)
+    {
+        separateControls = state;
+    }
 
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(separateControls);
+        }
+        else
+        {
+            separateControls = (bool)stream.ReceiveNext();
+        }
+    }
 
     #endregion ======================= Public : Start  =======================
 
@@ -49,7 +71,5 @@ public class RoomManager : MonoBehaviourPunCallbacks
             PhotonNetwork.Instantiate(Path.Combine(MultiplayerManager.PhotonPrefabPath, "PlayerManager"), Vector3.zero, Quaternion.identity);
         }
     }
-
     #endregion ======================= Private : Start  =======================
-
 }
