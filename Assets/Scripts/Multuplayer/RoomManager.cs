@@ -6,10 +6,11 @@ using System;
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 public class RoomManager : MonoBehaviourPunCallbacks, IPunObservable
 {
     #region Rules parameters
-    public bool separateControls;
+    public bool separateControls { get; private set; }
     #endregion
 
     private static RoomManager instance;
@@ -23,6 +24,7 @@ public class RoomManager : MonoBehaviourPunCallbacks, IPunObservable
         set { instance = value; }
     }
 
+    public string leavingPlayer;
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
@@ -42,6 +44,16 @@ public class RoomManager : MonoBehaviourPunCallbacks, IPunObservable
 
     }
 
+    private void Update()
+    {
+        Debug.Log(PhotonNetwork.CurrentRoom.PlayerCount);
+        if (PhotonNetwork.CurrentRoom.PlayerCount < 2)
+        {
+            MenuManager.Instance.GetMenu(MenuType.Victory).transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = leavingPlayer + " has left the game.";
+            MenuManager.Instance.OpenMenu(MenuType.Victory);
+        }
+    }
+
     #region  ======================= Public : Start  =======================
     public void SetSeparationControlsState(bool state)
     {
@@ -50,15 +62,41 @@ public class RoomManager : MonoBehaviourPunCallbacks, IPunObservable
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
+        Debug.Log("Occurence called");
         if (stream.IsWriting)
         {
             stream.SendNext(separateControls);
+            stream.SendNext(leavingPlayer);
         }
         else
         {
             separateControls = (bool)stream.ReceiveNext();
+            leavingPlayer = (string)stream.ReceiveNext();
         }
     }
+
+    public void OnPlayerLeave()
+    {
+        leavingPlayer = PhotonNetwork.NickName;
+        StartCoroutine(LeaveWithDelay());
+    }
+
+    private IEnumerator LeaveWithDelay()
+    {
+        yield return new WaitForSeconds(3);
+        PhotonNetwork.LeaveRoom();
+#if UNITY_WEBPLAYER
+     public static string webplayerQuitURL = "http://ronan-dhersignerie.fr/";
+#endif
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#elif UNITY_WEBPLAYER
+         Application.OpenURL(webplayerQuitURL);
+#else
+         Application.Quit();
+#endif
+    }
+
 
     #endregion ======================= Public : Start  =======================
 

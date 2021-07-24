@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,6 +13,15 @@ public class MenuManager : MonoBehaviour
         if (Instance == null)
             Instance = this;
     }
+
+    public MenuController GetMenu(MenuType menuName)
+    {
+        for (int i = 0; i < menus.Length; i++)
+            if (menus[i].MenuName == menuName)
+                return menus[i];
+        throw new Exception("Missing menu");
+    }
+
     public void OpenMenu(MenuType menuName)
     {
         for (int i = 0; i < menus.Length; i++)

@@ -7,7 +7,7 @@ public class MenuController : MonoBehaviour
     [SerializeField]
     MenuType menuName;
     public MenuType MenuName { get { return menuName; } }
-    public bool IsOpen { get; private set; }
+    public bool IsOpen;
     public void Open()
     {
         IsOpen = true;

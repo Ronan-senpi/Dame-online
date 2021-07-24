@@ -7,4 +7,6 @@ public enum MenuType
     Room,
     FindRoom,
     Error,
+    Victory,
+    Pause
 }
