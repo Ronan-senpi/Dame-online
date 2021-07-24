@@ -46,8 +46,7 @@ public class RoomManager : MonoBehaviourPunCallbacks, IPunObservable
 
     private void Update()
     {
-        Debug.Log(PhotonNetwork.CurrentRoom.PlayerCount);
-        if (PhotonNetwork.CurrentRoom.PlayerCount < 2)
+        if (PhotonNetwork.CurrentRoom.PlayerCount < 2 && leavingPlayer != PhotonNetwork.NickName)
         {
             MenuManager.Instance.GetMenu(MenuType.Victory).transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = leavingPlayer + " has left the game.";
             MenuManager.Instance.OpenMenu(MenuType.Victory);
@@ -85,16 +84,7 @@ public class RoomManager : MonoBehaviourPunCallbacks, IPunObservable
     {
         yield return new WaitForSeconds(3);
         PhotonNetwork.LeaveRoom();
-#if UNITY_WEBPLAYER
-     public static string webplayerQuitURL = "http://ronan-dhersignerie.fr/";
-#endif
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#elif UNITY_WEBPLAYER
-         Application.OpenURL(webplayerQuitURL);
-#else
-         Application.Quit();
-#endif
+        PhotonNetwork.LoadLevel(0);
     }
 
 
@@ -108,6 +98,6 @@ public class RoomManager : MonoBehaviourPunCallbacks, IPunObservable
             //Instantiate RoomMangar at (0,0,0) because it's a Empty
             PhotonNetwork.Instantiate(Path.Combine(MultiplayerManager.PhotonPrefabPath, "PlayerManager"), Vector3.zero, Quaternion.identity);
         }
-    }
+    }   
     #endregion ======================= Private : Start  =======================
 }

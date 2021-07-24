@@ -25,9 +25,23 @@ public class GameManager : MonoBehaviour
                 MenuManager.Instance.OpenMenu(pauseMenu);
         }
     }
-    public void QuitGame()
+    public void QuitRoom()
     {
         RoomManager.Instance.OnPlayerLeave();
         MenuManager.Instance.OpenMenu(MenuType.Loading);
+    }
+
+    public void QuitGame()
+    {
+#if UNITY_WEBPLAYER
+     public static string webplayerQuitURL = "http://ronan-dhersignerie.fr/";
+#endif
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#elif UNITY_WEBPLAYER
+         Application.OpenURL(webplayerQuitURL);
+#else
+         Application.Quit();
+#endif
     }
 }
