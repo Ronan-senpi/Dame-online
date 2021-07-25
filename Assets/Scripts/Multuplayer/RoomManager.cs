@@ -27,6 +27,7 @@ public class RoomManager : MonoBehaviourPunCallbacks, IPunObservable
     public string leavingPlayer;
     private void Awake()
     {
+        PhotonNetwork.SerializationRate = 3;
         DontDestroyOnLoad(gameObject);
     }
 
@@ -46,11 +47,15 @@ public class RoomManager : MonoBehaviourPunCallbacks, IPunObservable
 
     private void Update()
     {
-        if (PhotonNetwork.CurrentRoom.PlayerCount < 2 && leavingPlayer != PhotonNetwork.NickName)
+        if(PhotonNetwork.CurrentRoom != null)
         {
-            MenuManager.Instance.GetMenu(MenuType.Victory).transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = leavingPlayer + " has left the game.";
-            MenuManager.Instance.OpenMenu(MenuType.Victory);
+            if (PhotonNetwork.CurrentRoom.PlayerCount < 2 && leavingPlayer != PhotonNetwork.NickName)
+            {
+                MenuManager.Instance.GetMenu(MenuType.Victory).transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = leavingPlayer + " has left the game.";
+                MenuManager.Instance.OpenMenu(MenuType.Victory);
+            }
         }
+
     }
 
     #region  ======================= Public : Start  =======================
@@ -61,7 +66,7 @@ public class RoomManager : MonoBehaviourPunCallbacks, IPunObservable
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        Debug.Log("Occurence called");
+        Debug.Log(PhotonNetwork.SerializationRate);
         if (stream.IsWriting)
         {
             stream.SendNext(separateControls);

@@ -46,6 +46,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rotationSpeed: 5
   smoothFactor: 5
+  whiteCamera: {fileID: 0}
+  blackCamera: {fileID: 0}
 --- !u!114 &7446020514944680853
 MonoBehaviour:
   m_ObjectHideFlags: 0
