@@ -7,7 +7,10 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-public class RoomManager : MonoBehaviourPunCallbacks, IPunObservable
+using Photon.Realtime;
+using ExitGames.Client.Photon;
+
+public class RoomManager : MonoBehaviourPunCallbacks, IPunObservable, IOnEventCallback
 {
     #region Rules parameters
     public bool separateControls { get; private set; }
@@ -23,11 +26,11 @@ public class RoomManager : MonoBehaviourPunCallbacks, IPunObservable
         }
         set { instance = value; }
     }
+    private const byte playerQuitEventCode = 1;
+    private string leavingPlayer;
 
-    public string leavingPlayer;
     private void Awake()
     {
-        PhotonNetwork.SerializationRate = 3;
         DontDestroyOnLoad(gameObject);
     }
 
@@ -45,19 +48,6 @@ public class RoomManager : MonoBehaviourPunCallbacks, IPunObservable
 
     }
 
-    private void Update()
-    {
-        if(PhotonNetwork.CurrentRoom != null)
-        {
-            if (PhotonNetwork.CurrentRoom.PlayerCount < 2 && leavingPlayer != PhotonNetwork.NickName)
-            {
-                MenuManager.Instance.GetMenu(MenuType.Victory).transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = leavingPlayer + " has left the game.";
-                MenuManager.Instance.OpenMenu(MenuType.Victory);
-            }
-        }
-
-    }
-
     #region  ======================= Public : Start  =======================
     public void SetSeparationControlsState(bool state)
     {
@@ -66,30 +56,38 @@ public class RoomManager : MonoBehaviourPunCallbacks, IPunObservable
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        Debug.Log(PhotonNetwork.SerializationRate);
         if (stream.IsWriting)
         {
             stream.SendNext(separateControls);
-            stream.SendNext(leavingPlayer);
         }
         else
         {
             separateControls = (bool)stream.ReceiveNext();
-            leavingPlayer = (string)stream.ReceiveNext();
         }
     }
 
     public void OnPlayerLeave()
     {
-        leavingPlayer = PhotonNetwork.NickName;
-        StartCoroutine(LeaveWithDelay());
-    }
-
-    private IEnumerator LeaveWithDelay()
-    {
-        yield return new WaitForSeconds(3);
+        object[] content = new object[] { PhotonNetwork.NickName }; 
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
+        PhotonNetwork.RaiseEvent(playerQuitEventCode, content, raiseEventOptions, SendOptions.SendReliable);
         PhotonNetwork.LeaveRoom();
         PhotonNetwork.LoadLevel(0);
+    }
+
+    public void OnEvent(EventData photonEvent)
+    {
+        byte eventCode = photonEvent.Code;
+        if (eventCode == playerQuitEventCode)
+        {
+            object[] data = (object[])photonEvent.CustomData;
+            leavingPlayer = (string)data[0];
+            if(leavingPlayer != PhotonNetwork.NickName)
+            {
+                MenuManager.Instance.GetMenu(MenuType.Victory).transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = leavingPlayer + " has left the game.";
+                MenuManager.Instance.OpenMenu(MenuType.Victory);
+            }
+        }
     }
 
 

@@ -60,7 +60,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         else
             roomName += Random.Range(0, 10000).ToString("0000");
 
-        PhotonNetwork.CreateRoom(roomName);
+        PhotonNetwork.CreateRoom(roomName, new RoomOptions { MaxPlayers = 2 });
         MenuManager.Instance.OpenMenu(MenuType.Loading);
     }
     public void LeaveRoom()
@@ -71,15 +71,23 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
     public void JoinRoom(RoomInfo info)
     {
-        PhotonNetwork.JoinRoom(info.Name);
-        MenuManager.Instance.OpenMenu(MenuType.Loading);
+        if (info.MaxPlayers > info.PlayerCount)
+        {
+            PhotonNetwork.JoinRoom(info.Name);
+            MenuManager.Instance.OpenMenu(MenuType.Loading);
+        }
+        else
+        {
+            errorText.text = "ROOM IS FULL";
+            MenuManager.Instance.OpenMenu(MenuType.Error);
+        }
     }
     public void JoinRoom()
     {
         PhotonNetwork.JoinRoom(roomNameInput.text);
         MenuManager.Instance.OpenMenu(MenuType.Loading);
     }
-    
+
     public void StartGame()
     {
         RoomManager.Instance.SetSeparationControlsState(rulesBtn.GetComponent<Toggle>().isOn);
@@ -149,7 +157,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         MenuManager.Instance.OpenMenu(MenuType.Error);
     }
 
-    
+
     public override void OnLeftRoom()
     {
         MenuManager.Instance.OpenMenu(MenuType.Title);
@@ -172,7 +180,8 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         {
             if (roomList[i].RemovedFromList)
                 continue;
-            Instantiate(roomListItemPrefab, roomListContent).GetComponent<RoomListItemController>().Init(roomList[i]);
+            if (roomList[i].MaxPlayers > roomList[i].PlayerCount)
+                Instantiate(roomListItemPrefab, roomListContent).GetComponent<RoomListItemController>().Init(roomList[i]);
         }
     }
 
