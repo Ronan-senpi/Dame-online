@@ -37,6 +37,8 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     [SerializeField]
     GameObject rulesBtn;
 
+    List<RoomInfo> roomList = new List<RoomInfo>();
+
     void Awake()
     {
         if (Instance == null)
@@ -84,7 +86,29 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     }
     public void JoinRoom()
     {
-        PhotonNetwork.JoinRoom(roomNameInput.text);
+        string roomName = roomNameInput.text;
+        if (string.IsNullOrEmpty(roomName))
+            return;
+
+        for (int i = 0; i < roomList.Count; i++)
+        {
+            if (roomList[i].Name == roomName)
+            {
+                if (roomList[i].MaxPlayers <= roomList[i].PlayerCount)
+                {
+                    errorText.text = "ROOM IS FULL";
+                    MenuManager.Instance.OpenMenu(MenuType.Error);
+                    return;
+                }
+            }
+            else
+            {
+                errorText.text = "The room does not exist";
+                MenuManager.Instance.OpenMenu(MenuType.Error);
+                return;
+            }
+        }
+        PhotonNetwork.JoinRoom(roomName);
         MenuManager.Instance.OpenMenu(MenuType.Loading);
     }
 
@@ -171,6 +195,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
+        this.roomList = roomList;
         foreach (Transform child in roomListContent)
         {
             Destroy(child.gameObject);
