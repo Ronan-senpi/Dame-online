@@ -40,6 +40,13 @@ public class MenuManager : MonoBehaviour
         menu.Close();
     }
 
+    public void CloseAll()
+    {
+        for (int i = 0; i < menus.Length; i++)
+            if (menus[i].IsOpen)
+                CloseMenu(menus[i]);
+    }
+
     public void QuitGame()
     {
         GameManager.Instance.QuitGame();

@@ -8,5 +8,6 @@ public enum MenuType
     FindRoom,
     Error,
     Victory,
-    Pause
+    Pause,
+    Game
 }

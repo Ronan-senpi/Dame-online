@@ -41,6 +41,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
     void Awake()
     {
+        DontDestroyOnLoad(this);
         if (Instance == null)
         {
             Instance = this;
@@ -115,6 +116,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     public void StartGame()
     {
         RoomManager.Instance.SetSeparationControlsState(rulesBtn.GetComponent<Toggle>().isOn);
+
         PhotonNetwork.LoadLevel(1);
     }
 
