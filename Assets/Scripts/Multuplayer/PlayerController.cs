@@ -18,16 +18,14 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        //if (PhotonNetwork.IsMasterClient)
-        //{
-        //    Camera.main.transform.position = whiteCamera.position;
-        //    Camera.main.transform.rotation = whiteCamera.rotation;
-        //}
-        //else
-        //{
-        //    Camera.main.transform.position = blackCamera.position;
-        //    Camera.main.transform.rotation = blackCamera.rotation;
-        //}
+        if (PhotonNetwork.IsMasterClient)
+        {
+            Camera.main.transform.position = blackCamera.position;
+        }
+        else
+        {
+            Camera.main.transform.position = whiteCamera.position;
+        }
         offsetCam = Camera.main.transform.position - Vector3.zero;
         Camera.main.transform.LookAt(Vector3.zero);
     }

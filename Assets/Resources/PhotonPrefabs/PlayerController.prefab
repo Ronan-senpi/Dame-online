@@ -1,5 +1,65 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1096060835
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1096060836}
+  m_Layer: 0
+  m_Name: BlackCamera
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1096060836
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1096060835}
+  m_LocalRotation: {x: -0.00024400023, y: 0.9114929, z: -0.41131547, w: -0.00054071506}
+  m_LocalPosition: {x: -0.55315393, y: 9.225331, z: 8.475}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 3890693891190730716}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 48.575, y: 180.068, z: 0}
+--- !u!1 &2116102980
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2116102981}
+  m_Layer: 0
+  m_Name: WhiteCamera
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2116102981
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2116102980}
+  m_LocalRotation: {x: -0.41131744, y: -0.0005415851, z: 0.00024258485, w: -0.911492}
+  m_LocalPosition: {x: -0.55315393, y: 9.225331, z: -8.475}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 3890693891190730716}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 22, y: 0, z: 0}
 --- !u!1 &3890693891190730714
 GameObject:
   m_ObjectHideFlags: 0
@@ -28,7 +88,9 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.5985971, y: 4.0530653, z: -8.266357}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 2116102981}
+  - {fileID: 1096060836}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -46,8 +108,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rotationSpeed: 5
   smoothFactor: 5
-  whiteCamera: {fileID: 0}
-  blackCamera: {fileID: 0}
+  whiteCamera: {fileID: 2116102981}
+  blackCamera: {fileID: 1096060836}
 --- !u!114 &7446020514944680853
 MonoBehaviour:
   m_ObjectHideFlags: 0
