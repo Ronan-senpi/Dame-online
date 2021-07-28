@@ -1,4 +1,5 @@
 using Photon.Pun;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,12 +11,19 @@ public class PawnControlManager : MonoBehaviour
 
     private void Awake()
     {
-        basePlayer = PhotonNetwork.PlayerList[playerIndex];
+        try
+        {
+            basePlayer = PhotonNetwork.PlayerList[playerIndex];
+        }
+        catch (Exception e)
+        {
+
+        }
     }
 
     private void Start()
     {
-        foreach(Transform t in transform)
+        foreach (Transform t in transform)
         {
             PhotonView pv = t.GetComponent<PhotonView>();
             if (pv.Owner != basePlayer)
