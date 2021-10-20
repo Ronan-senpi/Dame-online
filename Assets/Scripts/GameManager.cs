@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
         }
-        pauseMenu = MenuManager.Instance.GetMenu(MenuType.Pause);
+      //pauseMenu = MenuManager.Instance.GetMenu(MenuType.Pause);
     }
 
     public void Update()
